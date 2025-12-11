@@ -20,10 +20,6 @@ const transactionRoutes = require("./routes/transactionRoutes");
 // Load environment variables from .env file, if present
 dotenv.config();
 
-// Set default port if not specified in environment
-const DEFAULT_PORT = 5000;
-const PORT = process.env.PORT ? Number(process.env.PORT) : DEFAULT_PORT;
-
 // Initialize Express app
 const app = express();
 
@@ -39,6 +35,11 @@ app.use(express.json());
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server is running." });
+});
+
+// Additional status check endpoint for Vercel
+app.get("/status", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Status route is working." });
 });
 
 // Register API routes
@@ -57,9 +58,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal server error." });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Tsuki Coffee backend server is running on port ${PORT}`);
-});
-
+// Export app for Vercel serverless function
 module.exports = app;
+module.exports.default = app;
