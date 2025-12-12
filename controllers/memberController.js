@@ -35,6 +35,12 @@ exports.addMember = async (req, res) => {
       return res.status(400).json({ error: "Name and phone are required." });
     }
 
+    // Check for duplicate phone number
+    const existingMember = await Member.findOne({ phone: phone.trim() });
+    if (existingMember) {
+      return res.status(400).json({ error: "Member ini sudah terdaftar." });
+    }
+
     // If clubCategory is provided, validate existence
     let clubCategoryId = null;
     if (clubCategory) {
